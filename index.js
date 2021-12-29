@@ -1,3 +1,6 @@
+const snakeboard = document.getElementById("snakeboard");
+const snakeboard_ctx = snakeboard.getContext("2d");
+
 const board_border = 'black';
 const board_background = "lightgrey";
 const snake_col = 'lightgreen';
@@ -20,24 +23,23 @@ let snake = [
     {x: 170, y: 200},
     {x: 160, y: 200}
 ]
-
+let changing_direction = false;
 let dx=0;
-let dy=0;
+let dy=10;
 
-// Get the canvas element
-const snakeboard = document.getElementById("snakeboard");
-// Return a two dimensional drawing context
-const snakeboard_ctx = snakeboard.getContext("2d");
+
 // Start game
 main();
 
 // main function called repeatedly to keep the game running
 function main() 
 {  
-   setTimeout(function onTick() 
+    if (gameDone()) return;
+    changing_direction = false;
+    setTimeout(function onTick() 
    {    
-     if (gameDone()) return;
-
+     
+     
      clearCanvas(); 
      drawSnake();   
      moveSnake();  
@@ -88,6 +90,8 @@ function moveSnake() // function movement
 
 function changeDirection(e) 
 {
+    if (changing_direction) return;
+    changing_direction = true;
     const keypressed = e.key;
 
     const up = dy === -10; 
@@ -123,11 +127,12 @@ function gameDone() // end game limits
     for (let i=4; i < snake.length; i++)
     {
         const collided = snake[i].x === snake[0].x && snake[i].y === snake[0].y
-        if (collided) return true
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true
     }
-    const hit_left_wall = snake[0].x > left_Wall
-    const hit_top_wall = snake[0].y > top_Wall
-    const hit_right_wall = snake[0].x > right_Wall
-    const hit_bottom_wall = snake[0].y > bottom_Wall
-    return hit_left_wall || hit_top_wall || hit_right_wall ||hit_bottom_wall
+    
+    const hit_left_wall = snake[0].x < left_Wall
+    const hit_top_wall = snake[0].y < top_Wall
+    const hit_right_wall = snake[0].x > right_Wall - 10 
+    const hit_bottom_wall = snake[0].y > bottom_Wall - 10
+    return hit_left_wall || hit_top_wall || hit_right_wall || hit_bottom_wall
 }
