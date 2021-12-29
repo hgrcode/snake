@@ -8,6 +8,10 @@ const right_key = 'ArrowRight';
 const up_key = 'ArrowUp';
 const down_key = 'ArrowDown';
 
+const left_Wall = 0; 
+const right_Wall = snakeboard.width;
+const top_Wall = 0;
+const bottom_Wall = snakeboard.height;
 
 let snake = [
     {x: 200, y: 200},
@@ -32,9 +36,10 @@ function main()
 {  
    setTimeout(function onTick() 
    {    
+     if (gameDone()) return;
+
      clearCanvas(); 
      drawSnake();   
-    
      moveSnake();  
      
      // Call main again
@@ -81,7 +86,7 @@ function moveSnake() // function movement
     snake.pop();
 }
 
-function changeDirection(e)
+function changeDirection(e) 
 {
     const keypressed = e.key;
 
@@ -113,3 +118,16 @@ function changeDirection(e)
 }
 document.addEventListener("keydown", changeDirection) 
 
+function gameDone() // end game limits
+{
+    for (let i=4; i < snake.length; i++)
+    {
+        const collided = snake[i].x === snake[0].x && snake[i].y === snake[0].y
+        if (collided) return true
+    }
+    const hit_left_wall = snake[0].x > left_Wall
+    const hit_top_wall = snake[0].y > top_Wall
+    const hit_right_wall = snake[0].x > right_Wall
+    const hit_bottom_wall = snake[0].y > bottom_Wall
+    return hit_left_wall || hit_top_wall || hit_right_wall ||hit_bottom_wall
+}
