@@ -1,10 +1,10 @@
-#snakeboard {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
 
+#scoreboard {
+display:block;
+font-size: 60px;
+padding-left: 60px;
+}
+.container
 h5{
     display: inline-block;
 }

@@ -1,8 +1,10 @@
 const snakeboard = document.getElementById("snakeboard");
 const snakeboard_ctx = snakeboard.getContext("2d");
 
+
+
 const board_border = 'black';
-const board_background = "lightgrey";
+const board_background = "black";
 const snake_col = 'lightgreen';
 const snake_border = 'darkgreen';
 
@@ -37,7 +39,10 @@ genFood();
 // main function called repeatedly to keep the game running
 function main() 
 {  
-    if (gameDone()) return;
+    if (gameDone()){
+        alert('Game Over!')
+        window.location.reload();
+    } 
     changing_direction = false;
     setTimeout(function onTick() 
    {        
@@ -46,11 +51,13 @@ function main()
      moveSnake();  
      drawSnake();  
      eatFood();
+     drawScore();
      
      // Call main again
      main();
    }, 100)
 }
+
 
 // draw a border around the canvas
 function clearCanvas() {
@@ -143,12 +150,14 @@ function gameDone() // end game limits
     const hit_right_wall = snake[0].x > right_Wall - 10 
     const hit_bottom_wall = snake[0].y > bottom_Wall - 10
     return hit_left_wall || hit_top_wall || hit_right_wall || hit_bottom_wall
+
+ 
 }
 
 function genFood()
 {
-    food_x = Math.round((Math.random()*snakeboard.width)/10)*10;
-    food_y = Math.round((Math.random()*snakeboard.height)/10)*10;
+    food_x = Math.round((Math.random()*(snakeboard.width-20))/10)*10;
+    food_y = Math.round((Math.random()*(snakeboard.height-20))/10)*10;
 
 }
 
@@ -169,8 +178,8 @@ function eatFood()
 function scoreIncrease()
 { 
     score += 1;
-    
     console.log(score)
+    
 
 }
 
@@ -179,3 +188,8 @@ function grow()
  snake.push(`{x: 100, y: 200}`)
 }
 
+function drawScore(){
+    document.getElementById('scoreboard').innerHTML = `score = ${score}` 
+}
+
+console.log(food_x,food_y)
