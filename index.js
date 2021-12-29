@@ -81,6 +81,14 @@ function drawSnakePart(snakePart) {
     snakeboard_ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
 }
 
+function drawFood()
+{
+    snakeboard_ctx.fillStyle = 'brown';
+    snakeboard_ctx.strokestyle = 'darkbrown';
+    snakeboard_ctx.fillRect(food_x, food_y, 10,10);
+    snakeboard_ctx.strokeRect(food_x,food_y, 10,10) 
+}
+
 function moveSnake() // function movement 
 {  
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
@@ -126,13 +134,26 @@ function gameDone() // end game limits
 {
     for (let i=4; i < snake.length; i++)
     {
-        const collided = snake[i].x === snake[0].x && snake[i].y === snake[0].y
         if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true
     }
-    
     const hit_left_wall = snake[0].x < left_Wall
     const hit_top_wall = snake[0].y < top_Wall
     const hit_right_wall = snake[0].x > right_Wall - 10 
     const hit_bottom_wall = snake[0].y > bottom_Wall - 10
     return hit_left_wall || hit_top_wall || hit_right_wall || hit_bottom_wall
+}
+
+function randomFood(min,max)
+{
+    return Math.round((Math.random()*(max,min)+min)/10)*10;
+}
+
+function genFood ()
+{
+    food_x = randomFood(0, snakeboard.width -10);
+    food_y = randomFood(0, snakeboard.height -10);
+    snake.forEach(function didSnakeEat(part) {
+        const snake_ate = part.x == food_x && part.y == food_y;
+        if (snake_ate) genFood ();
+    });
 }
