@@ -24,25 +24,28 @@ let snake = [
     {x: 160, y: 200}
 ]
 let changing_direction = false;
+let food_x;
+let food_y;
 let dx=0;
 let dy=10;
 
+let score = 0;
 
 // Start game
 main();
-
+genFood();
 // main function called repeatedly to keep the game running
 function main() 
 {  
     if (gameDone()) return;
     changing_direction = false;
     setTimeout(function onTick() 
-   {    
-     
-     
+   {        
      clearCanvas(); 
-     drawSnake();   
+     drawFood();
      moveSnake();  
+     drawSnake();  
+     eatFood();
      
      // Call main again
      main();
@@ -51,13 +54,9 @@ function main()
 
 // draw a border around the canvas
 function clearCanvas() {
-    //  Select the colour to fill the drawing
     snakeboard_ctx.fillStyle = board_background;
-    //  Select the colour for the border of the canvas
     snakeboard_ctx.strokestyle = board_border;
-    // Draw a "filled" rectangle to cover the entire canvas
     snakeboard_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
-    // Draw a "border" around the entire canvas
     snakeboard_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
 }
 
@@ -85,14 +84,17 @@ function drawFood()
 {
     snakeboard_ctx.fillStyle = 'brown';
     snakeboard_ctx.strokestyle = 'darkbrown';
-    snakeboard_ctx.fillRect(food_x, food_y, 10,10);
-    snakeboard_ctx.strokeRect(food_x,food_y, 10,10) 
+    snakeboard_ctx.fillRect(food_x, food_y, 10, 10);
+    snakeboard_ctx.strokeRect(food_x,food_y, 10, 10) 
 }
 
 function moveSnake() // function movement 
 {  
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
     snake.unshift(head);
+
+    const snake_ate = snake[0].x === food_x && snake[0].y === food_y;
+
     snake.pop();
 }
 
@@ -143,17 +145,37 @@ function gameDone() // end game limits
     return hit_left_wall || hit_top_wall || hit_right_wall || hit_bottom_wall
 }
 
-function randomFood(min,max)
+function genFood()
 {
-    return Math.round((Math.random()*(max,min)+min)/10)*10;
+    food_x = Math.round((Math.random()*snakeboard.width)/10)*10;
+    food_y = Math.round((Math.random()*snakeboard.height)/10)*10;
+
 }
 
-function genFood ()
+function eatFood()
 {
-    food_x = randomFood(0, snakeboard.width -10);
-    food_y = randomFood(0, snakeboard.height -10);
-    snake.forEach(function didSnakeEat(part) {
-        const snake_ate = part.x == food_x && part.y == food_y;
-        if (snake_ate) genFood ();
-    });
+    for (let i=4; i < snake.length; i++) {
+        
+        if (snake[0].x === food_x && snake[0].y === food_y ) 
+        {
+            genFood()
+            scoreIncrease()
+            grow()
+        }
+
+    }
 }
+
+function scoreIncrease()
+{ 
+    score += 1;
+    
+    console.log(score)
+
+}
+
+function grow()
+{ 
+ snake.push(`{x: 100, y: 200}`)
+}
+
